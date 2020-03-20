@@ -1,7 +1,7 @@
 include macro.asm
 
 .model small
-.stack 100
+.stack 100h
 .data
    universidad db 0ah,0dh,'UNIVERSIDAD DE SAN CARLOS DE GUATEMALA', '$'
    facultad db 0ah,0dh,'FACULTAD DE INGENIERIA', '$'
@@ -14,6 +14,11 @@ include macro.asm
    op1 db 0ah,0dh,'1) Iniciar Juego', '$'
    op2 db 0ah,0dh,'2) Cargar Juego', '$'
    op3 db 0ah,0dh,'3) Salir', '$'
+   ruta db 'guate.txt',0
+
+   ;definicion del tablero------------------------------------------------------
+   linea8 db 0ah,0dh,61h,62h,63h,64h,65h,66h,67h,68h,'$'
+   ;----------------------------------------------------------------------------
 .code
 
 main  proc              ;Inicia proceso
@@ -25,7 +30,7 @@ print miNombre
 print carnet
 print sec
 
-menuPrincipal:
+menuPrincipal:;menu principal--------------------------------------------
   print op1
   print op2
   print op3
@@ -40,12 +45,25 @@ menuPrincipal:
     je salir
 
 iniciar:
-  print op1
+  print linea8
+  mov bx,4
+  mov linea8[bx],'a'
+  print linea8
   jmp menuPrincipal
 
 cargar:
-  print op2
+  mov ax,@data
+  mov ds,ax
+  mov ah,3ch
+  mov cx,0
+  mov dx,offset ruta
+  int 21h
+  jc salir
+  mov bx,ax
+  mov ah,3eh
+  int  21h
   jmp menuPrincipal
+  ;---------------------------------------------------------------------------------------------
 
  salir:
    mov ah,4ch       ;Function (Quit with exit code (EXIT))
