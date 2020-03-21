@@ -53,6 +53,20 @@ include macro.asm
    etFn db '<TD><IMG SRC="negra.png"></TD>'
    etVacia db '<TD><IMG SRC="vacia.png"></TD>'
    ;============================================================================
+
+   ;==============Juego=================
+   scriptTurnoNegra db 0ah,0dh,'Turno Negras: ','$'
+   scriptTurnoBlanca db 0ah,0dh,'Turno Blancas: ','$'
+   entrada db 5 dup('$'),'$'
+
+   pass db 'PASS','$'
+   exit db 'EXIT','$'
+   show db 'SHOW','$'
+   save db 'SAVE','$'
+
+   entN db 'N'
+   entB db 'B'
+   ;====================================
 .code
 
 main  proc              ;Inicia proceso
@@ -71,13 +85,24 @@ menuPrincipal:;menu principal--------------------------------------------
     je salir
 
 iniciar:
-crearArchivo pathEsTablero
+;crearArchivo pathEsTablero
   ;call pintarTablero
+  turnoNegras:
+    print scriptTurnoNegra
+    call leerEntrada
+    jmp retornoMenu
+
+  turnoBlancas:
+    print scriptTurnoBlanca
+    call leerEntrada
+    jmp retornoMenu
+
+  retornoMenu:
   jmp menuPrincipal
 
 cargar:
 
-  call reporteActualTablero
+  ;call reporteActualTablero
   jmp menuPrincipal
   ;---------------------------------------------------------------------------------------------
 
@@ -88,11 +113,37 @@ cargar:
 
 main endp
 
+;===============================================================================================================
+;========================================PROCESOS===============================================================
+;===============================================================================================================
 getchar proc near
 mov ah,01h
 int 21h
 ret
 getchar endp           ;Termina proceso
+
+leerEntrada proc near
+
+pushear
+mov ax,@data
+mov ds,ax
+mov ah,3fh
+mov bx,00
+mov cx,5
+mov dx,offset[entrada]
+int 21h
+
+;print salto
+
+;mov ah,09h
+;mov dx,offset[entrada]
+;int 21h
+popear
+
+;print fb
+
+ret
+leerEntrada endp
 
 pintarTablero proc near;Proceso para imprimir el tablero
 pushear
