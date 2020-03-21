@@ -11,19 +11,19 @@ include macro.asm
   ;se concatenan con la coma, ejemplo: 'HOLA','_CONCATENADO',10h,'$'
 
    menuTexto db 0ah,0dh,'1) Iniciar Juego',0ah,0dh,'2) Cargar Juego',0ah,0dh,'3)Salir',0ah,0dh,'opcion: ', '$'
-   ruta db 'guate.txt',0
+   pathEsTablero db 'tablero.htm',0
    salto db 0ah,0dh,'$'
 
    ;definicion del tablero------------------------------------------------------
    ;000b -> vacio
    ;0001b -> Ficha negra
    ;010b -> ficha blanca
-   linea8 db 000b,001b,001b,001b,000b,000b,000b,000b
+   linea8 db 000b,000b,000b,000b,000b,000b,000b,000b
    linea7 db 000b,000b,000b,000b,000b,000b,000b,000b
    linea6 db 000b,000b,000b,000b,000b,000b,000b,000b
-   linea5 db 000b,000b,000b,010b,010b,000b,000b,000b
-   linea4 db 000b,000b,000b,010b,000b,000b,000b,000b
-   linea3 db 000b,000b,000b,010b,000b,000b,000b,000b
+   linea5 db 000b,000b,000b,000b,000b,000b,000b,000b
+   linea4 db 000b,000b,000b,000b,000b,000b,000b,000b
+   linea3 db 000b,000b,000b,000b,000b,000b,000b,000b
    linea2 db 000b,000b,000b,000b,000b,000b,000b,000b
    linea1 db 000b,000b,000b,000b,000b,000b,000b,000b
 
@@ -43,6 +43,16 @@ include macro.asm
    columnas db 0ah,0dh,020h,020h,020h,020h,'|    |    |    |    |    |    |    |','$'
    letras db 0ah,0dh,020h,020h,020h,020h,'A    B    C    D    E    F    G    H','$'
    ;----------------------------------------------------------------------------
+
+   ;HTML========================================================================
+   abrirHtml db '<HTML>',0ah,0dh,'<body>',0ah,0dh,'<table border="0" cellspacing="0" cellpadding="0">'
+   cerrarHtml db '</table>',0ah,0dh,'</body>',0ah,0dh,'</html>'
+   abrirTr db '<tr>'
+   cerrarTr db '</tr>'
+   etFb db '<TD><IMG SRC="blanca.png"></TD>'
+   etFn db '<TD><IMG SRC="negra.png"></TD>'
+   etVacia db '<TD><IMG SRC="vacia.png"></TD>'
+   ;============================================================================
 .code
 
 main  proc              ;Inicia proceso
@@ -61,20 +71,13 @@ menuPrincipal:;menu principal--------------------------------------------
     je salir
 
 iniciar:
-  call pintarTablero
+crearArchivo pathEsTablero
+  ;call pintarTablero
   jmp menuPrincipal
 
 cargar:
-  mov ax,@data
-  mov ds,ax
-  mov ah,3ch
-  mov cx,0
-  mov dx,offset ruta
-  int 21h
-  jc salir
-  mov bx,ax
-  mov ah,3eh
-  int  21h
+
+  call reporteActualTablero
   jmp menuPrincipal
   ;---------------------------------------------------------------------------------------------
 
@@ -355,6 +358,285 @@ popear
 ret
 pintarTablero endp      ;Termina proceso
 
+reporteActualTablero proc near
+pushear
 
+editar:
+;abrir el archivo
+mov ah,3dh
+mov al,1h ;Abrimos el archivo en solo escritura.
+mov dx,offset pathEsTablero
+int 21h
+;jc salir ;Si hubo error
+mov bx,ax ; mover hadfile
+escribirEnArchivo abrirHtml,SIZEOF abrirHtml
+
+;FIla 8----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html8:
+  inc di
+  mov al,linea8[di]
+  cmp al,000b
+    je vahtml8
+
+  cmp al,001b
+    je fnhtml8
+
+  cmp al,010b
+    je fbhtml8
+
+  vahtml8:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml8
+
+  fnhtml8:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml8
+
+  fbhtml8:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml8
+
+  rehtml8:
+Loop html8
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 7----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html7:
+  inc di
+  mov al,linea7[di]
+  cmp al,000b
+    je vahtml7
+
+  cmp al,001b
+    je fnhtml7
+
+  cmp al,010b
+    je fbhtml7
+
+  vahtml7:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml7
+
+  fnhtml7:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml7
+
+  fbhtml7:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml7
+
+  rehtml7:
+Loop html7
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 6----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html6:
+  inc di
+  mov al,linea6[di]
+  cmp al,000b
+    je vahtml6
+
+  cmp al,001b
+    je fnhtml6
+
+  cmp al,010b
+    je fbhtml6
+
+  vahtml6:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml6
+
+  fnhtml6:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml6
+
+  fbhtml6:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml6
+
+  rehtml6:
+Loop html6
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 5----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html5:
+  inc di
+  mov al,linea5[di]
+  cmp al,000b
+    je vahtml5
+
+  cmp al,001b
+    je fnhtml5
+
+  cmp al,010b
+    je fbhtml5
+
+  vahtml5:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml5
+
+  fnhtml5:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml5
+
+  fbhtml5:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml5
+
+  rehtml5:
+Loop html5
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 4----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html4:
+  inc di
+  mov al,linea4[di]
+  cmp al,000b
+    je vahtml4
+
+  cmp al,001b
+    je fnhtml4
+
+  cmp al,010b
+    je fbhtml4
+
+  vahtml4:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml4
+
+  fnhtml4:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml4
+
+  fbhtml4:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml4
+
+  rehtml4:
+Loop html4
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 3----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html3:
+  inc di
+  mov al,linea3[di]
+  cmp al,000b
+    je vahtml3
+
+  cmp al,001b
+    je fnhtml3
+
+  cmp al,010b
+    je fbhtml3
+
+  vahtml3:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml3
+
+  fnhtml3:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml3
+
+  fbhtml3:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml3
+
+  rehtml3:
+Loop html3
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 2----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html2:
+  inc di
+  mov al,linea2[di]
+  cmp al,000b
+    je vahtml2
+
+  cmp al,001b
+    je fnhtml2
+
+  cmp al,010b
+    je fbhtml2
+
+  vahtml2:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml2
+
+  fnhtml2:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml2
+
+  fbhtml2:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml2
+
+  rehtml2:
+Loop html2
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+;FIla 1----------------------------------------------------
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+mov cx,8
+mov di,-1
+html1:
+  inc di
+  mov al,linea1[di]
+  cmp al,000b
+    je vahtml1
+
+  cmp al,001b
+    je fnhtml1
+
+  cmp al,010b
+    je fbhtml1
+
+  vahtml1:;secciones para imprimir
+  escribirEnArchivo etVacia,SIZEOF etVacia
+  jmp rehtml1
+
+  fnhtml1:
+  escribirEnArchivo etFn,SIZEOF etFn
+  jmp rehtml1
+
+  fbhtml1:
+  escribirEnArchivo etFb,SIZEOF etFb
+  jmp rehtml1
+
+  rehtml1:
+Loop html1
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+
+escribirEnArchivo cerrarHtml,SIZEOF cerrarHtml
+
+;imprime msjescr
+cmp cx,ax
+;jne salir ;error salir
+mov ah,3eh  ;Cierre de archivo
+int 21h
+
+popear
+ret
+reporteActualTablero endp
 
 end
