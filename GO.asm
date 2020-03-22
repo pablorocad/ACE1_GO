@@ -40,32 +40,52 @@ include macro.asm
    vacio db '  ---','$'
    fb db 'FB---','$'
    fn db 'FN---','$'
+   vacio8 db '  ','$'
+   fb8 db 'FB','$'
+   fn8 db 'FN','$'
    columnas db 0ah,0dh,020h,020h,020h,020h,'|    |    |    |    |    |    |    |','$'
    letras db 0ah,0dh,020h,020h,020h,020h,'A    B    C    D    E    F    G    H','$'
    ;----------------------------------------------------------------------------
 
    ;HTML========================================================================
-   abrirHtml db '<HTML>',0ah,0dh,'<body>',0ah,0dh,'<table border="0" cellspacing="0" cellpadding="0">'
+   abrirHtml db '<HTML>',0ah,0dh,'<body>',0ah,0dh,'<table align=center border="0" cellspacing="0" cellpadding="0">'
    cerrarHtml db '</table>',0ah,0dh,'</body>',0ah,0dh,'</html>'
    abrirTr db '<tr>'
    cerrarTr db '</tr>'
+   abrirTd db '<td>'
+   cerrarTd db '</td>'
    etFb db '<TD><IMG SRC="blanca.png"></TD>'
    etFn db '<TD><IMG SRC="negra.png"></TD>'
    etVacia db '<TD><IMG SRC="vacia.png"></TD>'
+   ochoHTML db '8'
+   sieteHTML db '7'
+   seisHTML db '6'
+   cincoHTML db '5'
+   cuatroHTML db '4'
+   tresHTML db '3'
+   dosHTML db '2'
+   unoHTML db '1'
+   aHTML db 'A'
+   bHTML db 'B'
+   cHTML db 'C'
+   dHTML db 'D'
+   eHTML db 'E'
+   fHTML db 'F'
+   gHTML db 'G'
+   hHTML db 'H'
    ;============================================================================
 
    ;==============Juego=================
    scriptTurnoNegra db 0ah,0dh,'Turno Negras: ','$'
    scriptTurnoBlanca db 0ah,0dh,'Turno Blancas: ','$'
-   entrada db 5 dup('$'),'$'
+   entrada db 4 dup('$'),'$'
 
    pass db 'PASS','$'
    exit db 'EXIT','$'
    show db 'SHOW','$'
    save db 'SAVE','$'
 
-   entN db 'N'
-   entB db 'B'
+   detExit db 000b
    ;====================================
 .code
 
@@ -85,17 +105,46 @@ menuPrincipal:;menu principal--------------------------------------------
     je salir
 
 iniciar:
+
+;call pintarTablero
+;jmp menuPrincipal
 ;crearArchivo pathEsTablero
   ;call pintarTablero
   turnoNegras:
     print scriptTurnoNegra
+    mov detExit,000b
     call leerEntrada
-    jmp retornoMenu
+    mov ah,001b
+    call analizarEntrada
+
+    mov al,detExit
+    cmp al,100b
+    je retornoMenu
+    cmp al,001b
+    je turnoNegras
+
+    call pintarTablero
+    jmp turnoBlancas
+    ;jmp retornoMenu
 
   turnoBlancas:
     print scriptTurnoBlanca
+    mov detExit,000b
     call leerEntrada
-    jmp retornoMenu
+    mov ah,010b
+    call analizarEntrada
+
+    mov al,detExit
+    cmp al,100b
+    je retornoMenu
+    cmp al,001b
+    je turnoBlancas
+
+
+
+    call pintarTablero
+    jmp turnoNegras
+    ;jmp retornoMenu
 
   retornoMenu:
   jmp menuPrincipal
@@ -148,7 +197,7 @@ leerEntrada endp
 pintarTablero proc near;Proceso para imprimir el tablero
 pushear
 ;FIla 8----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print ocho
 p8:
@@ -180,7 +229,7 @@ Loop p8
 print columnas
 
 ;FIla 7----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print siete
 p7:
@@ -212,7 +261,7 @@ Loop p7
 print columnas
 
 ;FIla 6----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print seis
 p6:
@@ -244,7 +293,7 @@ Loop p6
 print columnas
 
 ;FIla 5----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print cinco
 p5:
@@ -276,7 +325,7 @@ Loop p5
 print columnas
 
 ;FIla 4----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print cuatro
 p4:
@@ -308,7 +357,7 @@ Loop p4
 print columnas
 
 ;FIla 3----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print tres
 p3:
@@ -340,7 +389,7 @@ Loop p3
 print columnas
 
 ;FIla 2----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print dos
 p2:
@@ -372,7 +421,7 @@ Loop p2
 print columnas
 
 ;FIla 1----------------------------------------------------
-mov cx,7
+mov cx,8
 mov bx,-1
 print uno
 p1:
@@ -424,6 +473,10 @@ escribirEnArchivo abrirHtml,SIZEOF abrirHtml
 
 ;FIla 8----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo ochoHTML,SIZEOF ochoHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html8:
@@ -456,6 +509,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 7----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo sieteHTML,SIZEOF sieteHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html7:
@@ -488,6 +544,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 6----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo seisHTML,SIZEOF seisHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html6:
@@ -520,6 +579,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 5----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo cincoHTML,SIZEOF cincoHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html5:
@@ -552,6 +614,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 4----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo cuatroHTML,SIZEOF cuatroHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html4:
@@ -584,6 +649,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 3----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo tresHTML,SIZEOF tresHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html3:
@@ -616,6 +684,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 2----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo dosHTML,SIZEOF dosHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html2:
@@ -648,6 +719,9 @@ escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 1----------------------------------------------------
 escribirEnArchivo abrirTr,SIZEOF abrirTr
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo unoHTML,SIZEOF unoHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 mov cx,8
 mov di,-1
 html1:
@@ -678,6 +752,34 @@ html1:
 Loop html1
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo aHTML,SIZEOF aHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo bHTML,SIZEOF bHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo cHTML,SIZEOF cHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo dHTML,SIZEOF dHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo eHTML,SIZEOF eHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo fHTML,SIZEOF fHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo gHTML,SIZEOF gHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+escribirEnArchivo abrirTd,SIZEOF abrirTd
+escribirEnArchivo hHTML,SIZEOF hHTML
+escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+
 escribirEnArchivo cerrarHtml,SIZEOF cerrarHtml
 
 ;imprime msjescr
@@ -689,5 +791,638 @@ int 21h
 popear
 ret
 reporteActualTablero endp
+
+analizarEntrada proc near
+pushear
+
+mov bx,0
+mov al,entrada[bx]
+
+s0:
+cmp al,41h;si es A
+  je escribirA
+
+cmp al,42h;si es B
+  je escribirB
+
+cmp al,43h;si es C
+  je escribirC
+
+cmp al,44h;si es D
+  je escribirD
+
+cmp al,45h;si es E
+  je s1
+
+cmp al,46h;si es F
+  je escribirF
+
+cmp al,47h;si es G
+  je escribirG
+
+cmp al,72;si es H
+  je escribirH
+
+  cmp al,50h;si es P
+    je s2
+
+  cmp al,53h;si es S
+    je s7
+
+s1:
+mov bx,1
+mov al,entrada[bx]
+
+cmp al,058h;si es X
+  jne escribirE
+  je s14
+
+escribirA:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirA1
+
+cmp al,32h;si es 2
+  je escribirA2
+
+cmp al,33h;si es 3
+  je escribirA3
+
+cmp al,34h;si es 4
+  je escribirA4
+
+cmp al,35h;si es 5
+  je escribirA5
+
+cmp al,36h;si es 6
+  je escribirA6
+
+cmp al,37h;si es 7
+  je escribirA7
+
+cmp al,38h;si es 8
+  je escribirA8
+
+
+escribirB:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirB1
+
+cmp al,32h;si es 2
+  je escribirB2
+
+cmp al,33h;si es 3
+  je escribirB3
+
+cmp al,34h;si es 4
+  je escribirB4
+
+cmp al,35h;si es 5
+  je escribirB5
+
+cmp al,36h;si es 6
+  je escribirB6
+
+cmp al,37h;si es 7
+  je escribirB7
+
+cmp al,38h;si es 8
+  je escribirB8
+
+
+escribirC:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirC1
+
+cmp al,32h;si es 2
+  je escribirC2
+
+cmp al,33h;si es 3
+  je escribirC3
+
+cmp al,34h;si es 4
+  je escribirC4
+
+cmp al,35h;si es 5
+  je escribirC5
+
+cmp al,36h;si es 6
+  je escribirC6
+
+cmp al,37h;si es 7
+  je escribirC7
+
+cmp al,38h;si es 8
+  je escribirC8
+
+
+escribirD:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirD1
+
+cmp al,32h;si es 2
+  je escribirD2
+
+cmp al,33h;si es 3
+  je escribirD3
+
+cmp al,34h;si es 4
+  je escribirD4
+
+cmp al,35h;si es 5
+  je escribirD5
+
+cmp al,36h;si es 6
+  je escribirD6
+
+cmp al,37h;si es 7
+  je escribirD7
+
+cmp al,38h;si es 8
+  je escribirD8
+
+
+escribirE:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirE1
+
+cmp al,32h;si es 2
+  je escribirE2
+
+cmp al,33h;si es 3
+  je escribirE3
+
+cmp al,34h;si es 4
+  je escribirE4
+
+cmp al,35h;si es 5
+  je escribirE5
+
+cmp al,36h;si es 6
+  je escribirE6
+
+cmp al,37h;si es 7
+  je escribirE7
+
+cmp al,38h;si es 8
+  je escribirE8
+
+escribirF:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirF1
+
+cmp al,32h;si es 2
+  je escribirF2
+
+cmp al,33h;si es 3
+  je escribirF3
+
+cmp al,34h;si es 4
+  je escribirF4
+
+cmp al,35h;si es 5
+  je escribirF5
+
+cmp al,36h;si es 6
+  je escribirF6
+
+cmp al,37h;si es 7
+  je escribirF7
+
+cmp al,38h;si es 8
+  je escribirF8
+
+
+escribirG:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirG1
+
+cmp al,32h;si es 2
+  je escribirG2
+
+cmp al,33h;si es 3
+  je escribirG3
+
+cmp al,34h;si es 4
+  je escribirG4
+
+cmp al,35h;si es 5
+  je escribirG5
+
+cmp al,36h;si es 6
+  je escribirG6
+
+cmp al,37h;si es 7
+  je escribirG7
+
+cmp al,38h;si es 8
+  je escribirG8
+
+
+escribirH:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,31h;si es 1
+  je escribirH1
+
+cmp al,32h;si es 2
+  je escribirH2
+
+cmp al,33h;si es 3
+  je escribirH3
+
+cmp al,34h;si es 4
+  je escribirH4
+
+cmp al,35h;si es 5
+  je escribirH5
+
+cmp al,36h;si es 6
+  je escribirH6
+
+cmp al,37h;si es 7
+  je escribirH7
+
+cmp al,38h;si es 8
+  je escribirH8
+
+
+escribirA1:
+mov bx,0
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirA2:
+mov bx,0
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirA3:
+mov bx,0
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirA4:
+mov bx,0
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirA5:
+mov bx,0
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirA6:
+mov bx,0
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirA7:
+mov bx,0
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirA8:
+mov bx,0
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirB1:
+mov bx,1
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirB2:
+mov bx,1
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirB3:
+mov bx,1
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirB4:
+mov bx,1
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirB5:
+mov bx,1
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirB6:
+mov bx,1
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirB7:
+mov bx,1
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirB8:
+mov bx,1
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirC1:
+mov bx,2
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirC2:
+mov bx,2
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirC3:
+mov bx,2
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirC4:
+mov bx,2
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirC5:
+mov bx,2
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirC6:
+mov bx,2
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirC7:
+mov bx,2
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirC8:
+mov bx,2
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirD1:
+mov bx,3
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirD2:
+mov bx,3
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirD3:
+mov bx,3
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirD4:
+mov bx,3
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirD5:
+mov bx,3
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirD6:
+mov bx,3
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirD7:
+mov bx,3
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirD8:
+mov bx,3
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirE1:
+mov bx,4
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirE2:
+mov bx,4
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirE3:
+mov bx,4
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirE4:
+mov bx,4
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirE5:
+mov bx,4
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirE6:
+mov bx,4
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirE7:
+mov bx,4
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirE8:
+mov bx,4
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirF1:
+mov bx,5
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirF2:
+mov bx,5
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirF3:
+mov bx,5
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirF4:
+mov bx,5
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirF5:
+mov bx,5
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirF6:
+mov bx,5
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirF7:
+mov bx,5
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirF8:
+mov bx,5
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirG1:
+mov bx,6
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirG2:
+mov bx,6
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirG3:
+mov bx,6
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirG4:
+mov bx,6
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirG5:
+mov bx,6
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirG6:
+mov bx,6
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirG7:
+mov bx,6
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirG8:
+mov bx,6
+mov linea8[bx],ah
+jmp salirAnalizador
+
+escribirH1:
+mov bx,7
+mov linea1[bx],ah
+jmp salirAnalizador
+escribirH2:
+mov bx,7
+mov linea2[bx],ah
+jmp salirAnalizador
+escribirH3:
+mov bx,7
+mov linea3[bx],ah
+jmp salirAnalizador
+escribirH4:
+mov bx,7
+mov linea4[bx],ah
+jmp salirAnalizador
+escribirH5:
+mov bx,7
+mov linea5[bx],ah
+jmp salirAnalizador
+escribirH6:
+mov bx,7
+mov linea6[bx],ah
+jmp salirAnalizador
+escribirH7:
+mov bx,7
+mov linea7[bx],ah
+jmp salirAnalizador
+escribirH8:
+mov bx,7
+mov linea8[bx],ah
+jmp salirAnalizador
+
+s2:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,41h
+je s4
+
+s4:
+mov bx,2
+mov al, entrada[bx]
+
+cmp al,53h
+je s5
+
+s5:
+mov bx,3
+mov al, entrada[bx]
+
+cmp al,53h
+je salirAnalizador
+
+s7:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,41h
+je s11
+
+cmp al,48h
+je s8
+
+s8:
+mov bx,2
+mov al, entrada[bx]
+
+cmp al,4fh
+je s9
+
+s9:
+mov bx,1
+mov al, entrada[bx]
+
+cmp al,57h
+je showReporte
+
+s11:
+mov bx,2
+mov al, entrada[bx]
+
+cmp al,56h
+je s12
+
+s12:
+mov bx,3
+mov al, entrada[bx]
+
+cmp al,45h
+je saveGame
+
+s14:
+mov bx,2
+mov al, entrada[bx]
+
+cmp al,49h
+je s15
+
+s15:
+mov bx,3
+mov al, entrada[bx]
+
+cmp al,54h
+je exitGame
+
+
+showReporte:
+call reporteActualTablero
+mov detExit,001b
+jmp salirAnalizador
+
+saveGame:
+print fn
+jmp salirAnalizador
+
+exitGame:
+mov detExit,100b
+jmp salirAnalizador
+
+salirAnalizador:
+
+popear
+ret
+analizarEntrada endp
 
 end
