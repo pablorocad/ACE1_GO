@@ -48,8 +48,9 @@ include macro.asm
    ;----------------------------------------------------------------------------
 
    ;HTML========================================================================
-   abrirHtml db '<HTML>',0ah,0dh,'<body>',0ah,0dh,'<table align=center border="0" cellspacing="0" cellpadding="0">'
-   cerrarHtml db '</table>',0ah,0dh,'</body>',0ah,0dh,'</html>'
+   abrirHtml db '<HTML>',0ah,0dh,'<head><title>201700584</title></head>',0ah,0dh,'<body align=center>',0ah,0dh,'<table align=center border="0" cellspacing="0" cellpadding="0">'
+   cerrarTabla db '</table>',0ah,0dh
+   cerrarHtml db 0ah,0dh,'</body>',0ah,0dh,'</html>'
    abrirTr db '<tr>'
    cerrarTr db '</tr>'
    abrirTd db '<td>'
@@ -73,6 +74,7 @@ include macro.asm
    fHTML db 'F'
    gHTML db 'G'
    hHTML db 'H'
+   fechaHora db '<h1>Fecha:00/00/2000 Hora: 00:00:00</h1>'
    ;============================================================================
 
    ;==============Juego=================
@@ -193,6 +195,68 @@ popear
 
 ret
 leerEntrada endp
+
+
+GetDate proc
+    mov ah,2ah
+    int 21h
+
+    mov al,dl
+    call convert
+    mov [bx + 10],ax
+
+    mov al,dh
+    call convert
+    mov [bx + 13],ax
+
+    mov ah,2ah
+    int 21h
+    add cx,0F830H
+    mov ax,cx
+    aam
+    mov cx,ax
+
+    call Disp
+    ret
+GetDate endp
+
+GetTime proc
+    mov ah,2ch
+    int 21h
+
+    mov al,ch
+    call Convert
+    mov [bx + 27],ax
+
+    mov al,cl
+    call convert
+    mov [bx+30],ax
+
+    mov al,dh
+    call convert
+    mov [bx+33],ax
+
+    ret
+GetTime endp
+
+Convert proc
+    mov ah,0
+    mov dl,10
+    div dl
+    or ax,3030h
+    ret
+Convert endp
+
+disp proc
+    MOV dl,ch      ; Since the values are in BX, BH Part
+    ADD dl,30h    ; ASCII Adjustment
+    mov [bx+18],dl
+
+    MOV dl,cl      ; BL Part
+    ADD dl,30h     ; ASCII Adjustment
+    mov [bx+19],dl
+    RET
+disp endp      ; End Disp Procedure
 
 pintarTablero proc near;Proceso para imprimir el tablero
 pushear
@@ -752,6 +816,8 @@ html1:
 Loop html1
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
+escribirEnArchivo abrirTr,SIZEOF abrirTr
+
 escribirEnArchivo abrirTd,SIZEOF abrirTd
 escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 
@@ -779,6 +845,11 @@ escribirEnArchivo cerrarTd,SIZEOF cerrarTd
 escribirEnArchivo abrirTd,SIZEOF abrirTd
 escribirEnArchivo hHTML,SIZEOF hHTML
 escribirEnArchivo cerrarTd,SIZEOF cerrarTd
+
+escribirEnArchivo cerrarTr,SIZEOF cerrarTr
+escribirEnArchivo cerrarTabla,SIZEOF cerrarTabla
+
+escribirEnArchivo fechaHora,SIZEOF fechaHora
 
 escribirEnArchivo cerrarHtml,SIZEOF cerrarHtml
 
@@ -1405,8 +1476,11 @@ mov al, entrada[bx]
 cmp al,54h
 je exitGame
 
-
 showReporte:
+lea bx,fechaHora
+call GetDate
+call GetTime
+
 call reporteActualTablero
 mov detExit,001b
 jmp salirAnalizador
