@@ -88,6 +88,7 @@ include macro.asm
    save db 'SAVE','$'
 
    detExit db 000b
+    detPass db 000b
    ;====================================
 .code
 
@@ -909,6 +910,7 @@ cmp al,058h;si es X
   je s14
 
 escribirA:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -938,6 +940,7 @@ cmp al,38h;si es 8
 
 
 escribirB:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -967,6 +970,7 @@ cmp al,38h;si es 8
 
 
 escribirC:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -996,6 +1000,7 @@ cmp al,38h;si es 8
 
 
 escribirD:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -1025,6 +1030,7 @@ cmp al,38h;si es 8
 
 
 escribirE:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -1053,6 +1059,7 @@ cmp al,38h;si es 8
   je escribirE8
 
 escribirF:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -1082,6 +1089,7 @@ cmp al,38h;si es 8
 
 
 escribirG:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -1111,6 +1119,7 @@ cmp al,38h;si es 8
 
 
 escribirH:
+mov detPass, 000b
 mov bx,1
 mov al, entrada[bx]
 
@@ -1422,7 +1431,7 @@ mov bx,3
 mov al, entrada[bx]
 
 cmp al,53h
-je salirAnalizador
+je passGame
 
 s7:
 mov bx,1
@@ -1483,15 +1492,34 @@ call GetTime
 
 call reporteActualTablero
 mov detExit,001b
+mov detPass, 000b
 jmp salirAnalizador
 
 saveGame:
 print fn
+mov detPass, 000b
 jmp salirAnalizador
 
 exitGame:
 mov detExit,100b
+mov detPass, 000b
 jmp salirAnalizador
+
+passGame:
+mov al,detPass
+cmp al,101b
+je finishPass1
+jne finishPass2
+
+finishPass1:
+mov detExit,100b
+mov detPass, 000b
+jmp salirAnalizador
+
+finishPass2:
+mov detPass,101b
+jmp salirAnalizador
+
 
 salirAnalizador:
 
