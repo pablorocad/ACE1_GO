@@ -12,6 +12,7 @@ include macro.asm
 
    menuTexto db 0ah,0dh,'1) Iniciar Juego',0ah,0dh,'2) Cargar Juego',0ah,0dh,'3)Salir',0ah,0dh,'opcion: ', '$'
    pathEsTablero db 'tablero.htm',0
+   pathTableroFInal db 'final.htm',0
    salto db 0ah,0dh,'$'
 
    ;definicion del tablero------------------------------------------------------
@@ -122,6 +123,7 @@ iniciar:
     call leerEntrada
     mov ah,001b
     call analizarEntrada
+    call eliminarFicha
 
     mov al,detExit
     cmp al,100b
@@ -139,6 +141,7 @@ iniciar:
     call leerEntrada
     mov ah,010b
     call analizarEntrada
+    call eliminarFicha
 
     mov al,detExit
     cmp al,100b
@@ -877,7 +880,7 @@ editar:
 ;abrir el archivo
 mov ah,3dh
 mov al,1h ;Abrimos el archivo en solo escritura.
-mov dx,offset pathEsTablero
+mov dx,offset pathTableroFInal
 int 21h
 ;jc salir ;Si hubo error
 mov bx,ax ; mover hadfile
@@ -1772,9 +1775,728 @@ int 21h
 popear
 ret
 reporteFinal endp
-;======================================================================================
-;======================================================================================
-;=========================================================================================
+;===============================================================================
+;===============================================================================
+;===============================================================================
+
+;===============================================================================
+;=Eliminar fichas===============================================================
+;===============================================================================
+
+eliminarFicha proc near
+pushear
+
+editar:
+;abrir el archivo
+
+;FIla 8----------------------------------------------------
+mov cx,8
+mov di,-1
+html8:
+  inc di
+  mov al,linea8[di]
+  cmp al,000b
+    jne vahtml8
+    je rehtml8
+
+  vahtml8:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h8
+    cmp di,7
+    je validar7h8
+    jne validarMedioh8
+
+  validar0h8:
+  pop di
+  jmp rehtml8
+  validar7h8:
+  pop di
+  jmp rehtml8
+  validarMedioh8:
+  dec di
+  mov al,linea8[di]
+  cmp al,001b
+  je validarMedioNegraIzq8
+
+  cmp al,010b
+  je validarMedioBlancaIzq8
+
+  validarMedioNegraIzq8:
+  inc di
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraAbajo8
+  pop di
+  jmp rehtml8
+  validarMedioNegraAbajo8:
+  inc di
+  mov al,linea8[di]
+  cmp al,001b
+  je validarMedioNegraDer8
+  pop di
+  jmp rehtml8
+  validarMedioNegraDer8:
+  dec di
+  mov linea8[di],000b
+  pop di
+  jmp rehtml8
+
+  validarMedioBlancaIzq8:
+  inc di
+  mov al,linea7[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo8
+  pop di
+  jmp rehtml8
+  validarMedioBlancaAbajo8:
+  inc di
+  mov al,linea8[di]
+  cmp al,010b
+  je validarMedioBlancaDer8
+  pop di
+  jmp rehtml8
+  validarMedioBlancaDer8:
+  dec di
+  mov linea8[di],000b
+  pop di
+  jmp rehtml8
+
+  rehtml8:
+  dec cx
+cmp cx,0
+jne html8
+
+;FIla 7----------------------------------------------------
+mov cx,8
+mov di,-1
+html7:
+  inc di
+  mov al,linea7[di]
+  cmp al,000b
+    jne vahtml7
+    je rehtml7
+
+  vahtml7:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h7
+    cmp di,7
+    je validar7h7
+    jne validarMedioh7
+
+  validar0h7:
+  pop di
+  jmp rehtml7
+  validar7h7:
+  pop di
+  jmp rehtml7
+  validarMedioh7:
+  mov al,linea8[di]
+  cmp al,001b
+  je validarMedioNegraArriba7
+
+  cmp al,010b
+  je validarMedioBlancaArriba7
+
+  validarMedioNegraArriba7:
+  dec di
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraIzq7
+  pop di
+  jmp rehtml7
+  validarMedioNegraIzq7:
+  inc di
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraAbajo7
+  pop di
+  jmp rehtml7
+  validarMedioNegraAbajo7:
+  inc di
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraDer7
+  pop di
+  jmp rehtml7
+  validarMedioNegraDer7:
+  dec di
+  mov linea7[di],000b
+  pop di
+  jmp rehtml7
+
+  validarMedioBlancaArriba7:
+  dec di
+  mov al,linea7[di]
+  cmp al,010b
+  je validarMedioBlancaIzq7
+  pop di
+  jmp rehtml7
+  validarMedioBlancaIzq7:
+  inc di
+  mov al,linea6[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo7
+  pop di
+  jmp rehtml7
+  validarMedioBlancaAbajo7:
+  inc di
+  mov al,linea7[di]
+  cmp al,010b
+  je validarMedioBlancaDer7
+  pop di
+  jmp rehtml7
+  validarMedioBlancaDer7:
+  dec di
+  mov linea7[di],000b
+  pop di
+  jmp rehtml7
+
+  rehtml7:
+  dec cx
+cmp cx,0
+jne html7
+
+;FIla 6----------------------------------------------------
+mov cx,8
+mov di,-1
+html6:
+  inc di
+  mov al,linea6[di]
+  cmp al,000b
+    jne vahtml6
+    je rehtml6
+
+  vahtml6:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h6
+    cmp di,6
+    je validar6h6
+    jne validarMedioh6
+
+  validar0h6:
+  pop di
+  jmp rehtml6
+  validar6h6:
+  pop di
+  jmp rehtml6
+  validarMedioh6:
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraArriba6
+
+  cmp al,010b
+  je validarMedioBlancaArriba6
+
+  validarMedioNegraArriba6:
+  dec di
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraIzq6
+  pop di
+  jmp rehtml6
+  validarMedioNegraIzq6:
+  inc di
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraAbajo6
+  pop di
+  jmp rehtml6
+  validarMedioNegraAbajo6:
+  inc di
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraDer6
+  pop di
+  jmp rehtml6
+  validarMedioNegraDer6:
+  dec di
+  mov linea6[di],000b
+  pop di
+  jmp rehtml6
+
+  validarMedioBlancaArriba6:
+  dec di
+  mov al,linea6[di]
+  cmp al,010b
+  je validarMedioBlancaIzq6
+  pop di
+  jmp rehtml6
+  validarMedioBlancaIzq6:
+  inc di
+  mov al,linea5[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo6
+  pop di
+  jmp rehtml6
+  validarMedioBlancaAbajo6:
+  inc di
+  mov al,linea6[di]
+  cmp al,010b
+  je validarMedioBlancaDer6
+  pop di
+  jmp rehtml6
+  validarMedioBlancaDer6:
+  dec di
+  mov linea6[di],000b
+  pop di
+  jmp rehtml6
+
+  rehtml6:
+  dec cx
+cmp cx,0
+jne html6
+
+;FIla 5----------------------------------------------------
+mov cx,8
+mov di,-1
+html5:
+  inc di
+  mov al,linea5[di]
+  cmp al,000b
+    jne vahtml5
+    je rehtml5
+
+  vahtml5:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h5
+    cmp di,5
+    je validar5h5
+    jne validarMedioh5
+
+  validar0h5:
+  pop di
+  jmp rehtml5
+  validar5h5:
+  pop di
+  jmp rehtml5
+  validarMedioh5:
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraArriba5
+
+  cmp al,010b
+  je validarMedioBlancaArriba5
+
+  validarMedioNegraArriba5:
+  dec di
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraIzq5
+  pop di
+  jmp rehtml5
+  validarMedioNegraIzq5:
+  inc di
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraAbajo5
+  pop di
+  jmp rehtml5
+  validarMedioNegraAbajo5:
+  inc di
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraDer5
+  pop di
+  jmp rehtml5
+  validarMedioNegraDer5:
+  dec di
+  mov linea5[di],000b
+  pop di
+  jmp rehtml5
+
+  validarMedioBlancaArriba5:
+  dec di
+  mov al,linea5[di]
+  cmp al,010b
+  je validarMedioBlancaIzq5
+  pop di
+  jmp rehtml5
+  validarMedioBlancaIzq5:
+  inc di
+  mov al,linea4[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo5
+  pop di
+  jmp rehtml5
+  validarMedioBlancaAbajo5:
+  inc di
+  mov al,linea5[di]
+  cmp al,010b
+  je validarMedioBlancaDer5
+  pop di
+  jmp rehtml5
+  validarMedioBlancaDer5:
+  dec di
+  mov linea5[di],000b
+  pop di
+  jmp rehtml5
+
+  rehtml5:
+  dec cx
+cmp cx,0
+jne html5
+
+;FIla 4----------------------------------------------------
+mov cx,8
+mov di,-1
+html4:
+  inc di
+  mov al,linea4[di]
+  cmp al,000b
+    jne vahtml4
+    je rehtml4
+
+  vahtml4:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h4
+    cmp di,4
+    je validar4h4
+    jne validarMedioh4
+
+  validar0h4:
+  pop di
+  jmp rehtml4
+  validar4h4:
+  pop di
+  jmp rehtml4
+  validarMedioh4:
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraArriba4
+
+  cmp al,010b
+  je validarMedioBlancaArriba4
+
+  validarMedioNegraArriba4:
+  dec di
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraIzq4
+  pop di
+  jmp rehtml4
+  validarMedioNegraIzq4:
+  inc di
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraAbajo4
+  pop di
+  jmp rehtml4
+  validarMedioNegraAbajo4:
+  inc di
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraDer4
+  pop di
+  jmp rehtml4
+  validarMedioNegraDer4:
+  dec di
+  mov linea4[di],000b
+  pop di
+  jmp rehtml4
+
+  validarMedioBlancaArriba4:
+  dec di
+  mov al,linea4[di]
+  cmp al,010b
+  je validarMedioBlancaIzq4
+  pop di
+  jmp rehtml4
+  validarMedioBlancaIzq4:
+  inc di
+  mov al,linea3[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo4
+  pop di
+  jmp rehtml4
+  validarMedioBlancaAbajo4:
+  inc di
+  mov al,linea4[di]
+  cmp al,010b
+  je validarMedioBlancaDer4
+  pop di
+  jmp rehtml4
+  validarMedioBlancaDer4:
+  dec di
+  mov linea4[di],000b
+  pop di
+  jmp rehtml4
+
+  rehtml4:
+  dec cx
+cmp cx,0
+jne html4
+
+;FIla 3----------------------------------------------------
+mov cx,8
+mov di,-1
+html3:
+  inc di
+  mov al,linea3[di]
+  cmp al,000b
+    jne vahtml3
+    je rehtml3
+
+  vahtml3:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h3
+    cmp di,3
+    je validar3h3
+    jne validarMedioh3
+
+  validar0h3:
+  pop di
+  jmp rehtml3
+  validar3h3:
+  pop di
+  jmp rehtml3
+  validarMedioh3:
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraArriba3
+
+  cmp al,010b
+  je validarMedioBlancaArriba3
+
+  validarMedioNegraArriba3:
+  dec di
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraIzq3
+  pop di
+  jmp rehtml3
+  validarMedioNegraIzq3:
+  inc di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraAbajo3
+  pop di
+  jmp rehtml3
+  validarMedioNegraAbajo3:
+  inc di
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraDer3
+  pop di
+  jmp rehtml3
+  validarMedioNegraDer3:
+  dec di
+  mov linea3[di],000b
+  pop di
+  jmp rehtml3
+
+  validarMedioBlancaArriba3:
+  dec di
+  mov al,linea3[di]
+  cmp al,010b
+  je validarMedioBlancaIzq3
+  pop di
+  jmp rehtml3
+  validarMedioBlancaIzq3:
+  inc di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo3
+  pop di
+  jmp rehtml3
+  validarMedioBlancaAbajo3:
+  inc di
+  mov al,linea3[di]
+  cmp al,010b
+  je validarMedioBlancaDer3
+  pop di
+  jmp rehtml3
+  validarMedioBlancaDer3:
+  dec di
+  mov linea3[di],000b
+  pop di
+  jmp rehtml3
+
+  rehtml3:
+  dec cx
+cmp cx,0
+jne html3
+
+;FIla 2----------------------------------------------------
+mov cx,8
+mov di,-1
+html2:
+  inc di
+  mov al,linea2[di]
+  cmp al,000b
+    jne vahtml2
+    je rehtml2
+
+  vahtml2:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h2
+    cmp di,2
+    je validar2h2
+    jne validarMedioh2
+
+  validar0h2:
+  pop di
+  jmp rehtml2
+  validar2h2:
+  pop di
+  jmp rehtml2
+  validarMedioh2:
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraArriba2
+
+  cmp al,010b
+  je validarMedioBlancaArriba2
+
+  validarMedioNegraArriba2:
+  dec di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraIzq2
+  pop di
+  jmp rehtml2
+  validarMedioNegraIzq2:
+  inc di
+  mov al,linea1[di]
+  cmp al,001b
+  je validarMedioNegraAbajo2
+  pop di
+  jmp rehtml2
+  validarMedioNegraAbajo2:
+  inc di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraDer2
+  pop di
+  jmp rehtml2
+  validarMedioNegraDer2:
+  dec di
+  mov linea2[di],000b
+  pop di
+  jmp rehtml2
+
+  validarMedioBlancaArriba2:
+  dec di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaIzq2
+  pop di
+  jmp rehtml2
+  validarMedioBlancaIzq2:
+  inc di
+  mov al,linea1[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo2
+  pop di
+  jmp rehtml2
+  validarMedioBlancaAbajo2:
+  inc di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaDer2
+  pop di
+  jmp rehtml2
+  validarMedioBlancaDer2:
+  dec di
+  mov linea2[di],000b
+  pop di
+  jmp rehtml2
+
+  rehtml2:
+  dec cx
+cmp cx,0
+jne html2
+
+;Fila 1-----------------------------------------------------------
+mov cx,8
+mov di,-1
+html1:
+  inc di
+  mov al,linea1[di]
+  cmp al,000b
+    je vahtml1
+
+  vahtml1:;secciones para imprimir
+  push di
+    cmp di,0
+    je validar0h1
+    cmp di,7
+    je validar7h1
+    jne validarMedioh1
+
+  validar0h1:
+  pop di
+  jmp rehtml1
+  validar7h1:
+  pop di
+  jmp rehtml1
+  validarMedioh1:
+  dec di
+  mov al,linea1[di]
+  cmp al,001b
+  je validarMedioNegraIzq1
+
+  cmp al,010b
+  je validarMedioBlancaIzq1
+
+  validarMedioNegraIzq1:
+  inc di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraAbajo1
+  pop di
+  jmp rehtml1
+  validarMedioNegraAbajo1:
+  inc di
+  mov al,linea1[di]
+  cmp al,001b
+  je validarMedioNegraDer1
+  pop di
+  jmp rehtml1
+  validarMedioNegraDer1:
+  dec di
+  mov linea2[di],000b
+  pop di
+  jmp rehtml1
+
+  validarMedioBlancaIzq1:
+  inc di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo1
+  pop di
+  jmp rehtml1
+  validarMedioBlancaAbajo1:
+  inc di
+  mov al,linea1[di]
+  cmp al,010b
+  je validarMedioBlancaDer1
+  pop di
+  jmp rehtml1
+  validarMedioBlancaDer1:
+  dec di
+  mov linea1[di],000b
+  pop di
+  jmp rehtml1
+
+  rehtml1:
+  dec cx
+cmp cx,0
+jne html1
+
+popear
+ret
+eliminarFicha endp
+
+;===============================================================================
+;===============================================================================
+;===============================================================================
 
 
 analizarEntrada proc near
