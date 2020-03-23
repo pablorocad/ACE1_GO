@@ -928,14 +928,15 @@ html8:
   cmp al,001b
   je validarMedioNegraAbajo8
   escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
   jmp rehtml8
-
   validarMedioNegraAbajo8:
   inc di
   mov al,linea8[di]
   cmp al,001b
   je validarMedioNegraDer8
   escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
   jmp rehtml8
   validarMedioNegraDer8:
   escribirEnArchivo etCirculo,SIZEOF etCirculo
@@ -943,8 +944,24 @@ html8:
   jmp rehtml8
 
   validarMedioBlancaIzq8:
+  inc di
+  mov al,linea7[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo8
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml8
   validarMedioBlancaAbajo8:
+  inc di
+  mov al,linea8[di]
+  cmp al,010b
+  je validarMedioBlancaDer8
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml8
   validarMedioBlancaDer8:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml8
 
   fnhtml8:
@@ -981,7 +998,79 @@ html7:
     je fbhtml7
 
   vahtml7:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h7
+    cmp di,7
+    je validar7h7
+    jne validarMedioh7
+
+  validar0h7:
+  validar7h7:
+  validarMedioh7:
+  mov al,linea8[di]
+  cmp al,001b
+  je validarMedioNegraArriba7
+
+  cmp al,010b
+  je validarMedioBlancaArriba7
+
+  validarMedioNegraArriba7:
+  dec di
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraIzq7
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml7
+  validarMedioNegraIzq7:
+  inc di
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraAbajo7
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml7
+  validarMedioNegraAbajo7:
+  inc di
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraDer7
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml7
+  validarMedioNegraDer7:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml7
+
+  validarMedioBlancaArriba7:
+  dec di
+  mov al,linea7[di]
+  cmp al,010b
+  je validarMedioBlancaIzq7
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml7
+  validarMedioBlancaIzq7:
+  inc di
+  mov al,linea6[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo7
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml7
+  validarMedioBlancaAbajo7:
+  inc di
+  mov al,linea7[di]
+  cmp al,010b
+  je validarMedioBlancaDer7
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml7
+  validarMedioBlancaDer7:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml7
 
   fnhtml7:
@@ -993,7 +1082,9 @@ html7:
   jmp rehtml7
 
   rehtml7:
-Loop html7
+  dec cx
+cmp cx,0
+jne html7
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 6----------------------------------------------------
@@ -1016,7 +1107,79 @@ html6:
     je fbhtml6
 
   vahtml6:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h6
+    cmp di,6
+    je validar6h6
+    jne validarMedioh6
+
+  validar0h6:
+  validar6h6:
+  validarMedioh6:
+  mov al,linea7[di]
+  cmp al,001b
+  je validarMedioNegraArriba6
+
+  cmp al,010b
+  je validarMedioBlancaArriba6
+
+  validarMedioNegraArriba6:
+  dec di
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraIzq6
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml6
+  validarMedioNegraIzq6:
+  inc di
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraAbajo6
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml6
+  validarMedioNegraAbajo6:
+  inc di
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraDer6
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml6
+  validarMedioNegraDer6:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml6
+
+  validarMedioBlancaArriba6:
+  dec di
+  mov al,linea6[di]
+  cmp al,010b
+  je validarMedioBlancaIzq6
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml6
+  validarMedioBlancaIzq6:
+  inc di
+  mov al,linea5[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo6
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml6
+  validarMedioBlancaAbajo6:
+  inc di
+  mov al,linea6[di]
+  cmp al,010b
+  je validarMedioBlancaDer6
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml6
+  validarMedioBlancaDer6:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml6
 
   fnhtml6:
@@ -1028,7 +1191,9 @@ html6:
   jmp rehtml6
 
   rehtml6:
-Loop html6
+  dec cx
+cmp cx,0
+jne html6
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 5----------------------------------------------------
@@ -1051,7 +1216,79 @@ html5:
     je fbhtml5
 
   vahtml5:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h5
+    cmp di,5
+    je validar5h5
+    jne validarMedioh5
+
+  validar0h5:
+  validar5h5:
+  validarMedioh5:
+  mov al,linea6[di]
+  cmp al,001b
+  je validarMedioNegraArriba5
+
+  cmp al,010b
+  je validarMedioBlancaArriba5
+
+  validarMedioNegraArriba5:
+  dec di
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraIzq5
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml5
+  validarMedioNegraIzq5:
+  inc di
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraAbajo5
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml5
+  validarMedioNegraAbajo5:
+  inc di
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraDer5
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml5
+  validarMedioNegraDer5:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml5
+
+  validarMedioBlancaArriba5:
+  dec di
+  mov al,linea5[di]
+  cmp al,010b
+  je validarMedioBlancaIzq5
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml5
+  validarMedioBlancaIzq5:
+  inc di
+  mov al,linea4[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo5
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml5
+  validarMedioBlancaAbajo5:
+  inc di
+  mov al,linea5[di]
+  cmp al,010b
+  je validarMedioBlancaDer5
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml5
+  validarMedioBlancaDer5:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml5
 
   fnhtml5:
@@ -1063,7 +1300,9 @@ html5:
   jmp rehtml5
 
   rehtml5:
-Loop html5
+  dec cx
+cmp cx,0
+jne html5
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 4----------------------------------------------------
@@ -1086,7 +1325,79 @@ html4:
     je fbhtml4
 
   vahtml4:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h4
+    cmp di,4
+    je validar4h4
+    jne validarMedioh4
+
+  validar0h4:
+  validar4h4:
+  validarMedioh4:
+  mov al,linea5[di]
+  cmp al,001b
+  je validarMedioNegraArriba4
+
+  cmp al,010b
+  je validarMedioBlancaArriba4
+
+  validarMedioNegraArriba4:
+  dec di
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraIzq4
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml4
+  validarMedioNegraIzq4:
+  inc di
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraAbajo4
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml4
+  validarMedioNegraAbajo4:
+  inc di
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraDer4
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml4
+  validarMedioNegraDer4:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml4
+
+  validarMedioBlancaArriba4:
+  dec di
+  mov al,linea4[di]
+  cmp al,010b
+  je validarMedioBlancaIzq4
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml4
+  validarMedioBlancaIzq4:
+  inc di
+  mov al,linea3[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo4
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml4
+  validarMedioBlancaAbajo4:
+  inc di
+  mov al,linea4[di]
+  cmp al,010b
+  je validarMedioBlancaDer4
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml4
+  validarMedioBlancaDer4:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml4
 
   fnhtml4:
@@ -1098,7 +1409,9 @@ html4:
   jmp rehtml4
 
   rehtml4:
-Loop html4
+  dec cx
+cmp cx,0
+jne html4
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 3----------------------------------------------------
@@ -1121,7 +1434,79 @@ html3:
     je fbhtml3
 
   vahtml3:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h3
+    cmp di,3
+    je validar3h3
+    jne validarMedioh3
+
+  validar0h3:
+  validar3h3:
+  validarMedioh3:
+  mov al,linea4[di]
+  cmp al,001b
+  je validarMedioNegraArriba3
+
+  cmp al,010b
+  je validarMedioBlancaArriba3
+
+  validarMedioNegraArriba3:
+  dec di
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraIzq3
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml3
+  validarMedioNegraIzq3:
+  inc di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraAbajo3
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml3
+  validarMedioNegraAbajo3:
+  inc di
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraDer3
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml3
+  validarMedioNegraDer3:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml3
+
+  validarMedioBlancaArriba3:
+  dec di
+  mov al,linea3[di]
+  cmp al,010b
+  je validarMedioBlancaIzq3
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml3
+  validarMedioBlancaIzq3:
+  inc di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo3
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml3
+  validarMedioBlancaAbajo3:
+  inc di
+  mov al,linea3[di]
+  cmp al,010b
+  je validarMedioBlancaDer3
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml3
+  validarMedioBlancaDer3:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml3
 
   fnhtml3:
@@ -1133,7 +1518,9 @@ html3:
   jmp rehtml3
 
   rehtml3:
-Loop html3
+  dec cx
+cmp cx,0
+jne html3
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 2----------------------------------------------------
@@ -1156,7 +1543,79 @@ html2:
     je fbhtml2
 
   vahtml2:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h2
+    cmp di,2
+    je validar2h2
+    jne validarMedioh2
+
+  validar0h2:
+  validar2h2:
+  validarMedioh2:
+  mov al,linea3[di]
+  cmp al,001b
+  je validarMedioNegraArriba2
+
+  cmp al,010b
+  je validarMedioBlancaArriba2
+
+  validarMedioNegraArriba2:
+  dec di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraIzq2
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml2
+  validarMedioNegraIzq2:
+  inc di
+  mov al,linea1[di]
+  cmp al,001b
+  je validarMedioNegraAbajo2
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml2
+  validarMedioNegraAbajo2:
+  inc di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraDer2
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml2
+  validarMedioNegraDer2:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml2
+
+  validarMedioBlancaArriba2:
+  dec di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaIzq2
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml2
+  validarMedioBlancaIzq2:
+  inc di
+  mov al,linea1[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo2
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml2
+  validarMedioBlancaAbajo2:
+  inc di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaDer2
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml2
+  validarMedioBlancaDer2:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml2
 
   fnhtml2:
@@ -1168,7 +1627,9 @@ html2:
   jmp rehtml2
 
   rehtml2:
-Loop html2
+  dec cx
+cmp cx,0
+jne html2
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 ;FIla 1----------------------------------------------------
@@ -1191,7 +1652,64 @@ html1:
     je fbhtml1
 
   vahtml1:;secciones para imprimir
-  escribirEnArchivo etVacia,SIZEOF etVacia
+  push di
+    cmp di,0
+    je validar0h1
+    cmp di,7
+    je validar7h1
+    jne validarMedioh1
+
+  validar0h1:
+  validar7h1:
+  validarMedioh1:
+  dec di
+  mov al,linea1[di]
+  cmp al,001b
+  je validarMedioNegraIzq1
+
+  cmp al,010b
+  je validarMedioBlancaIzq1
+
+  validarMedioNegraIzq1:
+  inc di
+  mov al,linea2[di]
+  cmp al,001b
+  je validarMedioNegraAbajo1
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml1
+  validarMedioNegraAbajo1:
+  inc di
+  mov al,linea1[di]
+  cmp al,001b
+  je validarMedioNegraDer1
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml1
+  validarMedioNegraDer1:
+  escribirEnArchivo etCirculo,SIZEOF etCirculo
+  pop di
+  jmp rehtml1
+
+  validarMedioBlancaIzq1:
+  inc di
+  mov al,linea2[di]
+  cmp al,010b
+  je validarMedioBlancaAbajo1
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml1
+  validarMedioBlancaAbajo1:
+  inc di
+  mov al,linea1[di]
+  cmp al,010b
+  je validarMedioBlancaDer1
+  escribirEnArchivo etTriangulo,SIZEOF etTriangulo
+  pop di
+  jmp rehtml1
+  validarMedioBlancaDer1:
+  escribirEnArchivo etCuadrado,SIZEOF etCuadrado
+  pop di
   jmp rehtml1
 
   fnhtml1:
@@ -1203,8 +1721,9 @@ html1:
   jmp rehtml1
 
   rehtml1:
-
-Loop html1
+  dec cx
+cmp cx,0
+jne html1
 escribirEnArchivo cerrarTr,SIZEOF cerrarTr
 
 escribirEnArchivo abrirTr,SIZEOF abrirTr
@@ -1908,6 +2427,7 @@ jne finishPass2
 finishPass1:
 mov detExit,100b
 mov detPass, 000b
+lea bx,fechaHora
 call GetDate
 call GetTime
 call reporteFinal
