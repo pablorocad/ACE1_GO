@@ -1892,6 +1892,8 @@ escribirEnArchivo cerrarTabla,SIZEOF cerrarTabla
 
 escribirEnArchivo fechaHora,SIZEOF fechaHora
 
+call contarPuntos
+
 cmp winner,001b
 je ganadorNegro
 escribirEnArchivo winBlanco,SIZEOF winBlanco
@@ -4075,7 +4077,6 @@ mov detPass, 000b
 lea bx,fechaHora
 call GetDate
 call GetTime
-call contarPuntos
 call reporteFinal
 jmp salirAnalizador
 
