@@ -13,6 +13,7 @@ include macro.asm
    menuTexto db 0ah,0dh,'1) Iniciar Juego',0ah,0dh,'2) Cargar Juego',0ah,0dh,'3)Salir',0ah,0dh,'opcion: ', '$'
    pathEsTablero db 'tablero.htm',0
    pathTableroFInal db 'final.htm',0
+   pathArchivoG db 'texto2.txt',0
    salto db 0ah,0dh,'$'
 
    ;definicion del tablero------------------------------------------------------
@@ -94,6 +95,8 @@ include macro.asm
    detExit db 000b
     detPass db 000b
    ;====================================
+   handler dw ?
+   texto db 65 dup('$')
 .code
 
 main  proc              ;Inicia proceso
@@ -159,7 +162,9 @@ iniciar:
   jmp menuPrincipal
 
 cargar:
-
+  call leerArchivo
+  ;print vec
+  ;print cerrarTd
   ;call reporteActualTablero
   jmp menuPrincipal
   ;---------------------------------------------------------------------------------------------
@@ -264,6 +269,34 @@ disp proc
     mov [bx+19],dl
     RET
 disp endp      ; End Disp Procedure
+
+leerArchivo proc near
+;pushear
+
+mov ah,3dh
+mov al,0 ;indicar que se abre archivo en lectura
+mov dx,offset pathArchivoG
+int 21h
+mov handler,ax
+
+mov ah,3fh
+mov bx,handler
+mov cx,64
+lea dx,texto
+int 21h
+
+mov ah,9
+mov dx, offset texto
+int 21h
+
+fin:
+  mov ah,3eh
+  mov bx,handler
+  int 21h
+
+;popear
+ret
+leerArchivo endp
 
 vaciarTablero proc near
 pushear
