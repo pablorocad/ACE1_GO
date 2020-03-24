@@ -101,7 +101,7 @@ print inicio
 
 menuPrincipal:;menu principal--------------------------------------------
   print menuTexto
-
+  call vaciarTablero
   call getchar
 
   cmp al,31h
@@ -264,6 +264,68 @@ disp proc
     mov [bx+19],dl
     RET
 disp endp      ; End Disp Procedure
+
+vaciarTablero proc near
+pushear
+
+mov cx,8
+mov bx,-1
+p8:
+inc bx
+mov linea8[bx],000b
+Loop p8
+
+mov cx,8
+mov bx,-1
+p7:
+inc bx
+mov linea7[bx],000b
+Loop p7
+
+mov cx,8
+mov bx,-1
+p6:
+inc bx
+mov linea6[bx],000b
+Loop p6
+
+mov cx,8
+mov bx,-1
+p5:
+inc bx
+mov linea5[bx],000b
+Loop p5
+
+mov cx,8
+mov bx,-1
+p4:
+inc bx
+mov linea4[bx],000b
+Loop p4
+
+mov cx,8
+mov bx,-1
+p3:
+inc bx
+mov linea3[bx],000b
+Loop p3
+
+mov cx,8
+mov bx,-1
+p2:
+inc bx
+mov linea2[bx],000b
+Loop p2
+
+mov cx,8
+mov bx,-1
+p1:
+inc bx
+mov linea1[bx],000b
+Loop p1
+popear
+ret
+vaciarTablero endp
 
 pintarTablero proc near;Proceso para imprimir el tablero
 pushear
