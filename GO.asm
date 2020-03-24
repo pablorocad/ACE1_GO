@@ -47,6 +47,7 @@ include macro.asm
    fn8 db 'FN','$'
    columnas db 0ah,0dh,020h,020h,020h,020h,'|    |    |    |    |    |    |    |','$'
    letras db 0ah,0dh,020h,020h,020h,020h,'A    B    C    D    E    F    G    H','$'
+
    ;----------------------------------------------------------------------------
 
    ;HTML========================================================================
@@ -81,6 +82,9 @@ include macro.asm
    gHTML db 'G'
    hHTML db 'H'
    fechaHora db '<h1>Fecha:00/00/2000 Hora: 00:00:00</h1>'
+   winBlanco db '<h2>Ganador: Blanco</h2>'
+   winNegro db '<h2>Ganador: Negro</h2>'
+   winner db 'ganador'
    ;============================================================================
 
    ;==============Juego=================
@@ -1034,6 +1038,8 @@ html8:
   pop di
   jmp rehtml8
   validarMedioNegraDer8:
+  dec di
+  mov linea8[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml8
@@ -1055,6 +1061,8 @@ html8:
   pop di
   jmp rehtml8
   validarMedioBlancaDer8:
+  dec di
+  mov linea8[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml8
@@ -1135,6 +1143,8 @@ html7:
   pop di
   jmp rehtml7
   validarMedioNegraDer7:
+  dec di
+  mov linea7[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml7
@@ -1164,6 +1174,8 @@ html7:
   pop di
   jmp rehtml7
   validarMedioBlancaDer7:
+  dec di
+  mov linea7[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml7
@@ -1244,6 +1256,8 @@ html6:
   pop di
   jmp rehtml6
   validarMedioNegraDer6:
+  dec di
+  mov linea6[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml6
@@ -1273,6 +1287,8 @@ html6:
   pop di
   jmp rehtml6
   validarMedioBlancaDer6:
+  dec di
+  mov linea6[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml6
@@ -1353,6 +1369,8 @@ html5:
   pop di
   jmp rehtml5
   validarMedioNegraDer5:
+  dec di
+  mov linea5[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml5
@@ -1382,6 +1400,8 @@ html5:
   pop di
   jmp rehtml5
   validarMedioBlancaDer5:
+  dec di
+  mov linea5[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml5
@@ -1462,6 +1482,8 @@ html4:
   pop di
   jmp rehtml4
   validarMedioNegraDer4:
+  dec di
+  mov linea4[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml4
@@ -1491,6 +1513,8 @@ html4:
   pop di
   jmp rehtml4
   validarMedioBlancaDer4:
+  dec di
+  mov linea4[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml4
@@ -1571,6 +1595,8 @@ html3:
   pop di
   jmp rehtml3
   validarMedioNegraDer3:
+  dec di
+  mov linea3[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml3
@@ -1600,6 +1626,8 @@ html3:
   pop di
   jmp rehtml3
   validarMedioBlancaDer3:
+  dec di
+  mov linea3[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml3
@@ -1680,6 +1708,8 @@ html2:
   pop di
   jmp rehtml2
   validarMedioNegraDer2:
+  dec di
+  mov linea2[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml2
@@ -1709,6 +1739,8 @@ html2:
   pop di
   jmp rehtml2
   validarMedioBlancaDer2:
+  dec di
+  mov linea2[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml2
@@ -1782,6 +1814,8 @@ html1:
   pop di
   jmp rehtml1
   validarMedioNegraDer1:
+  dec di
+  mov linea1[di],001b
   escribirEnArchivo etCirculo,SIZEOF etCirculo
   pop di
   jmp rehtml1
@@ -1803,6 +1837,8 @@ html1:
   pop di
   jmp rehtml1
   validarMedioBlancaDer1:
+  dec di
+  mov linea1[di],010b
   escribirEnArchivo etCuadrado,SIZEOF etCuadrado
   pop di
   jmp rehtml1
@@ -1856,6 +1892,16 @@ escribirEnArchivo cerrarTabla,SIZEOF cerrarTabla
 
 escribirEnArchivo fechaHora,SIZEOF fechaHora
 
+cmp winner,001b
+je ganadorNegro
+escribirEnArchivo winBlanco,SIZEOF winBlanco
+jmp cerrar
+
+ganadorNegro:
+escribirEnArchivo winNegro,SIZEOF winNegro
+jmp cerrar
+
+cerrar:
 escribirEnArchivo cerrarHtml,SIZEOF cerrarHtml
 
 ;imprime msjescr
@@ -3117,6 +3163,264 @@ cargarPartida endp
 ;==========================================================================
 ;==========================================================================
 
+;===================Contar Puntos=============================================
+contarPuntos proc near
+pushear
+
+;FIla 8----------------------------------------------------
+mov cx,8
+mov di,-1
+mov bl,0
+mov bh,0
+html8:
+  inc di
+  mov al,linea8[di]
+  cmp al,000b
+    je vahtml8
+
+  cmp al,001b
+    je fnhtml8
+
+  cmp al,010b
+    je fbhtml8
+
+  vahtml8:;secciones para imprimir
+  jmp rehtml8
+
+  fnhtml8:
+  inc bl
+  jmp rehtml8
+
+  fbhtml8:
+  inc bh
+  jmp rehtml8
+
+  rehtml8:
+Loop html8
+
+;FIla 7----------------------------------------------------
+mov cx,8
+mov di,-1
+html7:
+  inc di
+  mov al,linea7[di]
+  cmp al,000b
+    je vahtml7
+
+  cmp al,001b
+    je fnhtml7
+
+  cmp al,010b
+    je fbhtml7
+
+  vahtml7:;secciones para imprimir
+  jmp rehtml7
+
+  fnhtml7:
+  inc bl
+  jmp rehtml7
+
+  fbhtml7:
+  inc bh
+  jmp rehtml7
+
+  rehtml7:
+Loop html7
+
+;FIla 6----------------------------------------------------
+mov cx,8
+mov di,-1
+html6:
+  inc di
+  mov al,linea6[di]
+  cmp al,000b
+    je vahtml6
+
+  cmp al,001b
+    je fnhtml6
+
+  cmp al,010b
+    je fbhtml6
+
+  vahtml6:;secciones para imprimir
+  jmp rehtml6
+
+  fnhtml6:
+  inc bl
+  jmp rehtml6
+
+  fbhtml6:
+  inc bh
+  jmp rehtml6
+
+  rehtml6:
+Loop html6
+
+;FIla 5----------------------------------------------------
+mov cx,8
+mov di,-1
+html5:
+  inc di
+  mov al,linea5[di]
+  cmp al,000b
+    je vahtml5
+
+  cmp al,001b
+    je fnhtml5
+
+  cmp al,010b
+    je fbhtml5
+
+  vahtml5:;secciones para imprimir
+  jmp rehtml5
+
+  fnhtml5:
+  inc bl
+  jmp rehtml5
+
+  fbhtml5:
+  inc bh
+  jmp rehtml5
+
+  rehtml5:
+Loop html5
+
+;FIla 4----------------------------------------------------
+mov cx,8
+mov di,-1
+html4:
+  inc di
+  mov al,linea4[di]
+  cmp al,000b
+    je vahtml4
+
+  cmp al,001b
+    je fnhtml4
+
+  cmp al,010b
+    je fbhtml4
+
+  vahtml4:;secciones para imprimir
+  jmp rehtml4
+
+  fnhtml4:
+  inc bl
+  jmp rehtml4
+
+  fbhtml4:
+  inc bh
+  jmp rehtml4
+
+  rehtml4:
+Loop html4
+
+;FIla 3----------------------------------------------------
+mov cx,8
+mov di,-1
+html3:
+  inc di
+  mov al,linea3[di]
+  cmp al,000b
+    je vahtml3
+
+  cmp al,001b
+    je fnhtml3
+
+  cmp al,010b
+    je fbhtml3
+
+  vahtml3:;secciones para imprimir
+  jmp rehtml3
+
+  fnhtml3:
+  inc bl
+  jmp rehtml3
+
+  fbhtml3:
+  inc bh
+  jmp rehtml3
+
+  rehtml3:
+Loop html3
+
+;FIla 2----------------------------------------------------
+mov cx,8
+mov di,-1
+html2:
+  inc di
+  mov al,linea2[di]
+  cmp al,000b
+    je vahtml2
+
+  cmp al,001b
+    je fnhtml2
+
+  cmp al,010b
+    je fbhtml2
+
+  vahtml2:;secciones para imprimir
+  jmp rehtml2
+
+  fnhtml2:
+  inc bl
+  jmp rehtml2
+
+  fbhtml2:
+  inc bh
+  jmp rehtml2
+
+  rehtml2:
+Loop html2
+
+;FIla 1----------------------------------------------------
+mov cx,8
+mov di,-1
+html1:
+  inc di
+  mov al,linea1[di]
+  cmp al,000b
+    je vahtml1
+
+  cmp al,001b
+    je fnhtml1
+
+  cmp al,010b
+    je fbhtml1
+
+  vahtml1:;secciones para imprimir
+  jmp rehtml1
+
+  fnhtml1:
+  inc bl
+  jmp rehtml1
+
+  fbhtml1:
+  inc bh
+  jmp rehtml1
+
+  rehtml1:
+Loop html1
+
+cmp bl,bh
+je ganadorBlanco
+jb ganadorBlanco
+ja ganadorNegro
+
+ganadorNegro:
+mov winner,001b
+jmp finish
+
+ganadorBlanco:
+mov winner,010b
+jmp finish
+
+finish:
+popear
+ret
+contarPuntos endp
+
+;============================================================0
+
 analizarEntrada proc near
 pushear
 
@@ -3771,6 +4075,7 @@ mov detPass, 000b
 lea bx,fechaHora
 call GetDate
 call GetTime
+call contarPuntos
 call reporteFinal
 jmp salirAnalizador
 
