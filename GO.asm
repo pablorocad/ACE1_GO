@@ -102,6 +102,7 @@ include macro.asm
    ;====================================
    handler dw ?
    texto db 65 dup('$')
+   guardadoExito db '!Juego guardado con exito¡','$'
 .code
 
 main  proc              ;Inicia proceso
@@ -191,7 +192,6 @@ ret
 getchar endp           ;Termina proceso
 
 leerEntrada proc near
-
 pushear
 mov ax,@data
 mov ds,ax
@@ -200,16 +200,7 @@ mov bx,00
 mov cx,5
 mov dx,offset[entrada]
 int 21h
-
-;print salto
-
-;mov ah,09h
-;mov dx,offset[entrada]
-;int 21h
 popear
-
-;print fb
-
 ret
 leerEntrada endp
 
@@ -4056,6 +4047,7 @@ jmp salirAnalizador
 
 saveGame:
 call guardarPartida
+print guardadoExito
 mov detExit,001b
 mov detPass, 000b
 jmp salirAnalizador
