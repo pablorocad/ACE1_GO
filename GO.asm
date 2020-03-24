@@ -164,10 +164,10 @@ iniciar:
 
 cargar:
   call leerArchivo
-  ;print vec
-  ;print cerrarTd
-  ;call reporteActualTablero
-  jmp menuPrincipal
+  call cargarPartida
+  call pintarTablero
+
+  jmp iniciar
   ;---------------------------------------------------------------------------------------------
 
  salir:
@@ -2852,6 +2852,267 @@ int 21h
 popear
 ret
 guardarPartida endp
+;==========================================================================
+;==========================================================================
+;==========================================================================
+
+;===================Cargar Partida=============================================
+cargarPartida proc near
+pushear
+
+editar:
+;FIla 8----------------------------------------------------
+mov cx,8
+mov di,-1
+mov bx,-1
+html8:
+  inc di
+  inc bx
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml8
+
+  cmp al,31h
+    je fnhtml8
+
+  cmp al,32h
+    je fbhtml8
+
+  vahtml8:;secciones para imprimir
+  mov linea8[di],000b
+  jmp rehtml8
+
+  fnhtml8:
+  mov linea8[di],001b
+  jmp rehtml8
+
+  fbhtml8:
+  mov linea8[di],010b
+  jmp rehtml8
+
+  rehtml8:
+Loop html8
+
+;FIla 7----------------------------------------------------
+mov cx,8
+mov di,-1
+html7:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml7
+
+  cmp al,31h
+    je fnhtml7
+
+  cmp al,32h
+    je fbhtml7
+
+  vahtml7:;secciones para imprimir
+  mov linea7[di],000b
+  jmp rehtml7
+
+  fnhtml7:
+  mov linea7[di],001b
+  jmp rehtml7
+
+  fbhtml7:
+  mov linea7[di],010b
+  jmp rehtml7
+
+  rehtml7:
+Loop html7
+
+;FIla 6----------------------------------------------------
+mov cx,8
+mov di,-1
+html6:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml6
+
+  cmp al,31h
+    je fnhtml6
+
+  cmp al,32h
+    je fbhtml6
+
+  vahtml6:;secciones para imprimir
+  mov linea6[di],000b
+  jmp rehtml6
+
+  fnhtml6:
+  mov linea6[di],001b
+  jmp rehtml6
+
+  fbhtml6:
+  mov linea6[di],010b
+  jmp rehtml6
+
+  rehtml6:
+Loop html6
+
+;FIla 5----------------------------------------------------
+mov cx,8
+mov di,-1
+html5:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml5
+
+  cmp al,31h
+    je fnhtml5
+
+  cmp al,32h
+    je fbhtml5
+
+  vahtml5:;secciones para imprimir
+  mov linea5[di],000b
+  jmp rehtml5
+
+  fnhtml5:
+  mov linea5[di],001b
+  jmp rehtml5
+
+  fbhtml5:
+  mov linea5[di],010b
+  jmp rehtml5
+
+  rehtml5:
+Loop html5
+
+;FIla 4----------------------------------------------------
+mov cx,8
+mov di,-1
+html4:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml4
+
+  cmp al,31h
+    je fnhtml4
+
+  cmp al,32h
+    je fbhtml4
+
+  vahtml4:;secciones para imprimir
+  mov linea4[di],000b
+  jmp rehtml4
+
+  fnhtml4:
+  mov linea4[di],001b
+  jmp rehtml4
+
+  fbhtml4:
+  mov linea4[di],010b
+  jmp rehtml4
+
+  rehtml4:
+Loop html4
+
+;FIla 3----------------------------------------------------
+mov cx,8
+mov di,-1
+html3:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml3
+
+  cmp al,31h
+    je fnhtml3
+
+  cmp al,32h
+    je fbhtml3
+
+  vahtml3:;secciones para imprimir
+  mov linea3[di],000b
+  jmp rehtml3
+
+  fnhtml3:
+  mov linea3[di],001b
+  jmp rehtml3
+
+  fbhtml3:
+  mov linea3[di],010b
+  jmp rehtml3
+
+  rehtml3:
+Loop html3
+
+;FIla 2----------------------------------------------------
+mov cx,8
+mov di,-1
+html2:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml2
+
+  cmp al,31h
+    je fnhtml2
+
+  cmp al,32h
+    je fbhtml2
+
+  vahtml2:;secciones para imprimir
+  mov linea2[di],000b
+  jmp rehtml2
+
+  fnhtml2:
+  mov linea2[di],001b
+  jmp rehtml2
+
+  fbhtml2:
+  mov linea2[di],010b
+  jmp rehtml2
+
+  rehtml2:
+Loop html2
+
+;FIla 1----------------------------------------------------
+mov cx,8
+mov di,-1
+html1:
+inc bx
+  inc di
+  mov al,texto[bx]
+  cmp al,30h
+    je vahtml1
+
+  cmp al,31h
+    je fnhtml1
+
+  cmp al,32h
+    je fbhtml1
+
+  vahtml1:;secciones para imprimir
+  mov linea1[di],000b
+  jmp rehtml1
+
+  fnhtml1:
+  mov linea1[di],001b
+  jmp rehtml1
+
+  fbhtml1:
+  mov linea1[di],010b
+  jmp rehtml1
+
+  rehtml1:
+Loop html1
+
+popear
+ret
+cargarPartida endp
 ;==========================================================================
 ;==========================================================================
 ;==========================================================================
