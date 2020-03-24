@@ -71,6 +71,7 @@ include macro.asm
    tresHTML db '3'
    dosHTML db '2'
    unoHTML db '1'
+   ceroHTML db '0'
    aHTML db 'A'
    bHTML db 'B'
    cHTML db 'C'
@@ -283,10 +284,6 @@ mov ah,3fh
 mov bx,handler
 mov cx,64
 lea dx,texto
-int 21h
-
-mov ah,9
-mov dx, offset texto
 int 21h
 
 fin:
@@ -2593,6 +2590,271 @@ eliminarFicha endp
 ;===============================================================================
 ;===============================================================================
 
+;===================Guardar Partida=============================================
+guardarPartida proc near
+pushear
+
+editar:
+;abrir el archivo
+mov ah,3dh
+mov al,1h ;Abrimos el archivo en solo escritura.
+mov dx,offset pathArchivoG
+int 21h
+;jc salir ;Si hubo error
+mov bx,ax ; mover hadfile
+
+;FIla 8----------------------------------------------------
+mov cx,8
+mov di,-1
+html8:
+  inc di
+  mov al,linea8[di]
+  cmp al,000b
+    je vahtml8
+
+  cmp al,001b
+    je fnhtml8
+
+  cmp al,010b
+    je fbhtml8
+
+  vahtml8:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml8
+
+  fnhtml8:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml8
+
+  fbhtml8:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml8
+
+  rehtml8:
+Loop html8
+
+;FIla 7----------------------------------------------------
+mov cx,8
+mov di,-1
+html7:
+  inc di
+  mov al,linea7[di]
+  cmp al,000b
+    je vahtml7
+
+  cmp al,001b
+    je fnhtml7
+
+  cmp al,010b
+    je fbhtml7
+
+  vahtml7:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml7
+
+  fnhtml7:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml7
+
+  fbhtml7:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml7
+
+  rehtml7:
+Loop html7
+
+;FIla 6----------------------------------------------------
+mov cx,8
+mov di,-1
+html6:
+  inc di
+  mov al,linea6[di]
+  cmp al,000b
+    je vahtml6
+
+  cmp al,001b
+    je fnhtml6
+
+  cmp al,010b
+    je fbhtml6
+
+  vahtml6:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml6
+
+  fnhtml6:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml6
+
+  fbhtml6:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml6
+
+  rehtml6:
+Loop html6
+
+;FIla 5----------------------------------------------------
+mov cx,8
+mov di,-1
+html5:
+  inc di
+  mov al,linea5[di]
+  cmp al,000b
+    je vahtml5
+
+  cmp al,001b
+    je fnhtml5
+
+  cmp al,010b
+    je fbhtml5
+
+  vahtml5:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml5
+
+  fnhtml5:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml5
+
+  fbhtml5:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml5
+
+  rehtml5:
+Loop html5
+
+;FIla 4----------------------------------------------------
+mov cx,8
+mov di,-1
+html4:
+  inc di
+  mov al,linea4[di]
+  cmp al,000b
+    je vahtml4
+
+  cmp al,001b
+    je fnhtml4
+
+  cmp al,010b
+    je fbhtml4
+
+  vahtml4:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml4
+
+  fnhtml4:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml4
+
+  fbhtml4:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml4
+
+  rehtml4:
+Loop html4
+
+;FIla 3----------------------------------------------------
+mov cx,8
+mov di,-1
+html3:
+  inc di
+  mov al,linea3[di]
+  cmp al,000b
+    je vahtml3
+
+  cmp al,001b
+    je fnhtml3
+
+  cmp al,010b
+    je fbhtml3
+
+  vahtml3:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml3
+
+  fnhtml3:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml3
+
+  fbhtml3:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml3
+
+  rehtml3:
+Loop html3
+
+;FIla 2----------------------------------------------------
+mov cx,8
+mov di,-1
+html2:
+  inc di
+  mov al,linea2[di]
+  cmp al,000b
+    je vahtml2
+
+  cmp al,001b
+    je fnhtml2
+
+  cmp al,010b
+    je fbhtml2
+
+  vahtml2:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml2
+
+  fnhtml2:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml2
+
+  fbhtml2:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml2
+
+  rehtml2:
+Loop html2
+
+;FIla 1----------------------------------------------------
+mov cx,8
+mov di,-1
+html1:
+  inc di
+  mov al,linea1[di]
+  cmp al,000b
+    je vahtml1
+
+  cmp al,001b
+    je fnhtml1
+
+  cmp al,010b
+    je fbhtml1
+
+  vahtml1:;secciones para imprimir
+  escribirEnArchivo ceroHTML,SIZEOF ceroHTML
+  jmp rehtml1
+
+  fnhtml1:
+  escribirEnArchivo unoHTML,SIZEOF unoHTML
+  jmp rehtml1
+
+  fbhtml1:
+  escribirEnArchivo dosHTML,SIZEOF dosHTML
+  jmp rehtml1
+
+  rehtml1:
+Loop html1
+
+;imprime msjescr
+cmp cx,ax
+;jne salir ;error salir
+mov ah,3eh  ;Cierre de archivo
+int 21h
+
+popear
+ret
+guardarPartida endp
+;==========================================================================
+;==========================================================================
+;==========================================================================
 
 analizarEntrada proc near
 pushear
@@ -3226,7 +3488,8 @@ mov detPass, 000b
 jmp salirAnalizador
 
 saveGame:
-print fn
+call guardarPartida
+mov detExit,001b
 mov detPass, 000b
 jmp salirAnalizador
 
